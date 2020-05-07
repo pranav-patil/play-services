@@ -5,7 +5,7 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.13.0"
+scalaVersion := "2.13.2"
 
 libraryDependencies ++= Seq(ehcache)
 libraryDependencies += filters
@@ -18,7 +18,6 @@ libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-ext" % "3.6.7",
   "com.typesafe.play" %% "play-slick" % "5.0.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "5.0.0",
-  "com.typesafe.play" %% "play-jdbc" % "2.8.0",
   "com.typesafe.play" %% "play-ws" % "2.8.0",
   "com.softwaremill.sttp" %% "core" % "1.7.2",
   "com.softwaremill.sttp" %% "async-http-client-backend-future" % "1.7.2" exclude("org.slf4j", "slf4j-api"),

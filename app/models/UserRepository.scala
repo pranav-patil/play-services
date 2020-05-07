@@ -29,8 +29,8 @@ class UserRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implici
     /** The ID column, which is the primary key, and auto incremented */
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    def firstName = column[String]("firstName")
-    def lastName = column[String]("lastName")
+    def firstName = column[String]("first_name")
+    def lastName = column[String]("last_name")
 
     def age = column[Int]("age")
     def email = column[String]("email")
