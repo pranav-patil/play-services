@@ -15,9 +15,8 @@ class UserController @Inject()(repo: UserRepository, cc: ControllerComponents)(i
   private val logger = Logger(this.getClass)
 
   def getUsers = Action.async { implicit request =>
-    logger.trace("index: ")
-    repo.list().map { people =>
-      Ok(Json.toJson(people))
+    repo.list().map { users =>
+      Ok(Json.toJson(users))
     }
   }
 
@@ -34,14 +33,14 @@ class UserController @Inject()(repo: UserRepository, cc: ControllerComponents)(i
   }
 
   def getUser(id: Long) = Action.async { implicit request =>
-    repo.get(id) map { people =>
-      Ok(Json.toJson(people))
+    repo.get(id) map { users =>
+      Ok(Json.toJson(users))
     }
   }
 
   def deleteUser(id : Long) = Action.async { implicit request =>
     repo.delete(id) map { res =>
-      Redirect(routes.HomeController.index).flashing("success" -> "user.deleted")
+      Ok(Json.obj("status" -> "success")).as("application/json")
     }
   }
 }
