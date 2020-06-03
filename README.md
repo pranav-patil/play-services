@@ -60,8 +60,21 @@
 * Download latest [Windows MongoDB release](https://www.mongodb.org/dl/win32/x86_64-2008plus-ssl) and extract the zip file.
 * Create directories **data** and **logs** in MONGODB_HOME directory, were MONGODB_HOME is the path to the unzipped mongodb directory.
 * Create file **mongo.log** in MONGODB_HOME/logs directory.
-* Create **mongod.cfg** file using [MongoDB configuration options](https://docs.mongodb.com/v3.2/reference/configuration-options/) in MONGODB_HOME/bin directory. Alternatively copy **mongod.cfg** file from spring-microservices/data-service/config and add to MONGODB_HOME/bin directory.
-* Find & edit the token **@logs@** with path "MONGODB_HOME\logs" and **@data@** with path "MONGODB_HOME\data".
+* Create **mongod.cfg** file using [MongoDB configuration options](https://docs.mongodb.com/v3.2/reference/configuration-options/) in MONGODB_HOME/bin directory or copy below mongo configuration in the **mongod.cfg** configuration file.
+
+
+    systemLog:
+       destination: file
+       path: MONGODB_HOME/logs
+       logAppend: true
+    storage:
+       dbPath: MONGODB_HOME/data
+       journal:
+          enabled: true
+    net:
+       bindIp: 127.0.0.1
+       port: 27017
+
 * Go to MONGODB_HOME\bin directory and execute the command "mongod --config mongod.cfg" to run mongodb.
 * MongoDB runs on default port 27017.
 
@@ -91,3 +104,46 @@ Below are the instructions to download/setup SBT and to run Play Services using 
 
 
         $ curl http://localhost:9000/users
+
+## Gatling Performance Tests
+
+Gatling is a powerful performance [testing tool](https://automationrhapsody.com/performance-testing-with-gatling/). Being built on top of [Akka](https://emprovisetech.blogspot.com/2020/03/akka-evolution-of-multithreading.html) it allows scale thousands of virtual users on a single machine.
+Gatling provides [Galing Recorder](https://gatling.io/open-source/) which works as a proxy capturing all traffic and converting it into [Gatling simulation scenario](https://automationrhapsody.com/performance-testing-with-gatling-record-and-playback/). The recorded simulation can then be updated with proper values such as number of users etc and ran again simulating load.
+Gatling also enables to test RESTful services which are essentially HTTP requests, allowing to HTTP headers and HTTP parameters.
+Currently using SBT plugin for gatling testing, but Maven can also be used to run gatling tests, refer [maven-archetype-template](https://github.com/gatling/gatling-highcharts-maven-archetype).
+#### Below are the commands to run the Gatling Tests
+
+To setup an empty Gatling project from Gatling template, use below SBT command:
+```
+sbt new gatling/gatling.g8
+```
+In order to run a load test, play-services is started in production mode by staging the application using the below command. 
+Staging allows to run the application from project source directory directly by SBT installation on the server, instead of creating a full distribution.
+While starting the play-services in production mode, the default [application secret](https://www.playframework.com/documentation/2.8.x/ApplicationSecret) has to be changed using `play.http.secret.key` parameter.
+```
+sbt clean stage
+cd target/universal/stage
+./bin/play-services -Dplay.http.secret.key=secret-application-key
+```
+
+The Gatling project here is a [sub-project](https://www.scala-sbt.org/1.x/docs/Multi-Project.html) with a common build.
+Hence in order to run the test we need to specify the sub-project before the actual command. 
+To run all the gatling tests we can use on of three variations of the below commands:
+```bash
+sbt gatling/gatling:test
+sbt ";project gatling;gatling:test"
+sbt "project gatling" gatling:test
+```
+
+To run a specific gatling simulation we pass the simulation to the testOnly command as below:
+```
+sbt ";project gatling;gatling:testOnly simulation.GatlingSpec"
+```
+
+To generate the report we execute the below command:
+```
+sbt ";project gatling;gatling:lastReport"
+```
+
+
+   ![Gatling Report](images/gatling-report.png)

@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-ws" % "2.8.0",
   "com.softwaremill.sttp" %% "core" % "1.7.2",
   "com.softwaremill.sttp" %% "async-http-client-backend-future" % "1.7.2" exclude("org.slf4j", "slf4j-api"),
-  "org.scalatest" %% "scalatest" % "3.1.1" % "test",
+  "org.scalatest" %% "scalatest" % "3.1.1" % Test,
   "com.cwbase" % "logback-redis-appender" % "1.1.2"
 )
 
@@ -30,6 +30,20 @@ scalacOptions ++= Seq(
   "-deprecation",
   "-Xfatal-warnings"
 )
+
+// disable scala documentation due to error https://github.com/scala/bug/issues/11955
+sources in (Compile,doc) := Seq.empty
+publishArtifact in (Compile, packageDoc) := false
+
+lazy val gatlingVersion = "3.3.1"
+lazy val gatling = (project in file("gatling"))
+  .enablePlugins(GatlingPlugin)
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion % Test,
+      "io.gatling" % "gatling-test-framework" % gatlingVersion % Test
+    )
+  )
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.emprovise.controllers._"
