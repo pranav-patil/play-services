@@ -62,18 +62,17 @@
 * Create file **mongo.log** in MONGODB_HOME/logs directory.
 * Create **mongod.cfg** file using [MongoDB configuration options](https://docs.mongodb.com/v3.2/reference/configuration-options/) in MONGODB_HOME/bin directory or copy below mongo configuration in the **mongod.cfg** configuration file.
 
-
-    systemLog:
-       destination: file
-       path: MONGODB_HOME/logs
-       logAppend: true
-    storage:
-       dbPath: MONGODB_HOME/data
-       journal:
-          enabled: true
-    net:
-       bindIp: 127.0.0.1
-       port: 27017
+        systemLog:
+          destination: file
+          path: MONGODB_HOME/logs
+          logAppend: true
+        storage:
+          dbPath: MONGODB_HOME/data
+          journal:
+             enabled: true
+        net:
+          bindIp: 127.0.0.1
+          port: 27017
 
 * Go to MONGODB_HOME\bin directory and execute the command "mongod --config mongod.cfg" to run mongodb.
 * MongoDB runs on default port 27017.
